@@ -20,6 +20,4 @@ Hideyuki Tachibana 2013
 
 License
 -----------
-Free
-
-
+MIT
