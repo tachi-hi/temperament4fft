@@ -1,3 +1,6 @@
+[![CI](https://github.com/tachi-hi/temperament4fft/actions/workflows/ci.yml/badge.svg)](https://github.com/tachi-hi/temperament4fft/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 What's this?
 ------------
 
