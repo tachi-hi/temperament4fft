@@ -1,5 +1,6 @@
 import Data.Ratio
 import Data.List (intercalate)
+import System.Environment (getArgs)
 
 -- given e.g. [e2,e3,e5] this function returns 3^^e3 * 5^^e5 / 2^^e2
 p2r :: [Integer] -> Rational
@@ -15,14 +16,18 @@ p2r xs = p2r' 1 primes xs
 centsdiff :: Double -> [Integer] -> Double
 centsdiff n xs = (*100) . (+(-n)) . (*12) . logBase 2 . fromRational . p2r $ xs
 
--- list of ratios within 50 cents for a given semitone
-lstRatios :: Integer -> [(Rational, Integer)]
-lstRatios n' = [(p2r xs, round . centsdiff n $ xs)
-               | xs <- candidates,
-               (<50) . abs . centsdiff n $ xs]
+-- exponent range for a given prime base
+exponentRange :: Integer -> [Integer]
+exponentRange base = [0..(ceiling . (*10) . logBase (fromInteger base) $ (2 :: Double))]
+
+-- list of ratios within threshold cents for a given semitone
+lstRatios :: [Integer] -> Double -> Integer -> [(Rational, Integer)]
+lstRatios usePrimes threshold n' =
+    [(p2r xs, round . centsdiff n $ xs)
+    | xs <- candidates,
+    (<threshold) . abs . centsdiff n $ xs]
     where n = fromInteger n'
-          candidates = [[e2, e3, e5]| e2 <- range 2, e3 <- range 3, e5 <- range 5]
-          range n = [0..(ceiling . (*10) . logBase n $ 2)]
+          candidates = sequence (map exponentRange usePrimes)
 
 -- format a single approximation: "≒ 135/256 (-8 cents)"
 fmtApprox :: (Rational, Integer) -> String
@@ -32,13 +37,34 @@ fmtApprox (r, c) = "≒ " ++ show (numerator r) ++ "/" ++ show (denominator r)
                        | otherwise = show x
 
 -- format a line: "+3 semitone\t≒ 75/64 (-25 cents)\t≒ 625/512 (+45 cents)"
-fmtLine :: Integer -> String
-fmtLine n = showSigned n ++ " semitone\t"
-            ++ intercalate "\t" (map fmtApprox (lstRatios n))
+fmtLine :: [Integer] -> Double -> Integer -> String
+fmtLine usePrimes threshold n =
+    showSigned n ++ " semitone\t"
+    ++ intercalate "\t" (map fmtApprox (lstRatios usePrimes threshold n))
     where showSigned x | x >= 0    = "+" ++ show x
                        | otherwise = show x
 
+-- parse command line arguments
+parseArgs :: [String] -> ([Integer], Double)
+parseArgs args = (parsePrimes args, parseThreshold args)
+    where
+        parsePrimes ("--primes":val:_) = map read (splitOn ',' val)
+        parsePrimes (_:rest) = parsePrimes rest
+        parsePrimes [] = [2, 3, 5]
+
+        parseThreshold ("--threshold":val:_) = read val
+        parseThreshold (_:rest) = parseThreshold rest
+        parseThreshold [] = 50
+
+        splitOn _ [] = []
+        splitOn sep str = let (w, rest) = break (== sep) str
+                          in w : case rest of
+                                     [] -> []
+                                     (_:xs) -> splitOn sep xs
+
 -- main
 main :: IO ()
-main = mapM_ (putStrLn . fmtLine) [-11..11]
-
+main = do
+    args <- getArgs
+    let (usePrimes, threshold) = parseArgs args
+    mapM_ (putStrLn . fmtLine usePrimes threshold) [-11..11]

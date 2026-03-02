@@ -30,10 +30,21 @@ ghc -o temperament4fft temperament4fft.hs
 python temperament4fft.py
 ```
 
-## Customization
+## Options
 
-You can extend the set of primes used for approximation (e.g., 7, 11, 13) by modifying `candidates` in the source code.
-The approximation threshold (default: within 50 cents) is also adjustable.
+Both versions accept the following command-line arguments:
+
+| Option | Description | Default |
+|---|---|---|
+| `--primes` | Comma-separated list of primes to use | `2,3,5` |
+| `--threshold` | Maximum deviation in cents | `50` |
+
+Example:
+
+```sh
+./temperament4fft --primes 2,3,5,7 --threshold 30
+python temperament4fft.py --primes 2,3,5,7 --threshold 30
+```
 
 ## Author
 
