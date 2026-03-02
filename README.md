@@ -8,7 +8,7 @@ A tool to find rational approximations r = 2^{-a} × 3^b × 5^c of each semitone
 When the FFT size is chosen as 2^N × r, having r composed only of small prime factors enables efficient FFT computation (e.g., [FFTW](http://www.fftw.org/)).
 This makes it possible to perform pitch shifting by an arbitrary number of semitones at high speed.
 
-The output of this tool is used in the [Euterpe](https://github.com/tachi-hi/euterpe/activity) system.
+The output of this tool is used in the [Euterpe](https://github.com/tachi-hi/euterpe/) system.
 
 ## Requirements
 
