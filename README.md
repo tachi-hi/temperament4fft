@@ -30,6 +30,38 @@ ghc -o temperament4fft temperament4fft.hs
 python temperament4fft.py
 ```
 
+## Output
+
+```console
+$ ./temperament4fft
+-11 semitone	≒ 135/256 (-8 cents)
+-10 semitone	≒ 9/16 (+4 cents)
+-9 semitone	≒ 75/128 (-25 cents)	≒ 625/1024 (+45 cents)
+-8 semitone	≒ 5/8 (-14 cents)	≒ 81/128 (+8 cents)
+-7 semitone	≒ 675/1024 (-22 cents)
+-6 semitone	≒ 45/64 (-10 cents)	≒ 729/1024 (+12 cents)
+-5 semitone	≒ 3/4 (+2 cents)	≒ 375/512 (-39 cents)
+-4 semitone	≒ 25/32 (-27 cents)	≒ 405/512 (-6 cents)
+-3 semitone	≒ 27/32 (+6 cents)
+-2 semitone	≒ 225/256 (-23 cents)
+-1 semitone	≒ 15/16 (-12 cents)	≒ 243/256 (+10 cents)
++0 semitone	≒ 1/1 (+0 cents)	≒ 125/128 (-41 cents)
++1 semitone	≒ 135/128 (-8 cents)
++2 semitone	≒ 9/8 (+4 cents)	≒ 1125/1024 (-37 cents)
++3 semitone	≒ 75/64 (-25 cents)	≒ 625/512 (+45 cents)	≒ 1215/1024 (-4 cents)
++4 semitone	≒ 5/4 (-14 cents)	≒ 81/64 (+8 cents)
++5 semitone	≒ 675/512 (-22 cents)
++6 semitone	≒ 45/32 (-10 cents)	≒ 729/512 (+12 cents)
++7 semitone	≒ 3/2 (+2 cents)	≒ 375/256 (-39 cents)
++8 semitone	≒ 25/16 (-27 cents)	≒ 405/256 (-6 cents)
++9 semitone	≒ 27/16 (+6 cents)
++10 semitone	≒ 225/128 (-23 cents)	≒ 1875/1024 (+47 cents)
++11 semitone	≒ 15/8 (-12 cents)	≒ 243/128 (+10 cents)
+```
+
+For example, to transpose up by +6 semitones, you can set the FFT window size ratio to 45/32 (with -10 cents deviation) or 729/512 (+12 cents).
+If the base FFT size is 2^N, the actual size becomes 2^N × 45/32 = 2^{N-5} × 45 = 2^{N-5} × 3^2 × 5, which is still a product of small primes and thus efficient for FFT.
+
 ## Options
 
 Both versions accept the following command-line arguments:
