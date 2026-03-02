@@ -1,26 +1,35 @@
+# temperament4fft
+
 [![CI](https://github.com/tachi-hi/temperament4fft/actions/workflows/ci.yml/badge.svg)](https://github.com/tachi-hi/temperament4fft/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-What's this?
-------------
+A tool to find rational approximations r = 2^{-a} × 3^b × 5^c of each semitone interval 2^{n/12} in 12-tone equal temperament.
 
-This is a sketch code to calculate a ratio, expressed as r = 2^{-a} * 3^b * 5^c (a, b, c are non-negative integer) that approximates 2^{n/12} (n semitones).
-These values are advantageous when considering FFT, because 2^N * r is a product of small primes.
-See also the manual of FFTW3 and any documents on Fast Fourier Transform.
-The values obtained by the code are used in our automatic pitch transposition system, etc.
+When the FFT size is chosen as 2^N × r, having r composed only of small prime factors enables efficient FFT computation (e.g., [FFTW](http://www.fftw.org/)).
+This makes it possible to perform pitch shifting by an arbitrary number of semitones at high speed.
 
-How to use it
--------------
+The output of this tool is used in the [Euterpe](https://github.com/tachi-hi/euterpe/activity) system.
 
-Modify the code suitably for your purpose.
-For example, if you permit the use of more primes such as 7, 11, and 13, you may add them in the code ("candidates").
-Then, compile it.
+## Requirements
 
-Contributor
------------
+- GHC (Glasgow Haskell Compiler)
 
-Hideyuki Tachibana 2013
+## Build & Run
 
-License
------------
-MIT
+```sh
+ghc -o temperament4fft temperament4fft.hs
+./temperament4fft
+```
+
+## Customization
+
+You can extend the set of primes used for approximation (e.g., 7, 11, 13) by modifying `candidates` in the source code.
+The approximation threshold (default: within 50 cents) is also adjustable.
+
+## Author
+
+Hideyuki Tachibana (2013)
+
+## License
+
+[MIT](LICENSE)
