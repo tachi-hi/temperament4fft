@@ -12,13 +12,22 @@ The output of this tool is used in the [Euterpe](https://github.com/tachi-hi/eut
 
 ## Requirements
 
-- GHC (Glasgow Haskell Compiler)
+- GHC (Glasgow Haskell Compiler) for the Haskell version
+- Python 3 for the Python version
 
 ## Build & Run
+
+### Haskell
 
 ```sh
 ghc -o temperament4fft temperament4fft.hs
 ./temperament4fft
+```
+
+### Python
+
+```sh
+python temperament4fft.py
 ```
 
 ## Customization

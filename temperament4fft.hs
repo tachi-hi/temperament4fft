@@ -1,4 +1,5 @@
 import Data.Ratio
+import Data.List (intercalate)
 
 -- given e.g. [e2,e3,e5] this function returns 3^^e3 * 5^^e5 / 2^^e2
 p2r :: [Integer] -> Rational
@@ -14,16 +15,30 @@ p2r xs = p2r' 1 primes xs
 centsdiff :: Double -> [Integer] -> Double
 centsdiff n xs = (*100) . (+(-n)) . (*12) . logBase 2 . fromRational . p2r $ xs
 
--- list of ratios
-lstRatios :: Integer -> [(Rational, String)]
-lstRatios n' = [(p2r xs, str_cents xs) 
-               | xs <- candidates, 
-               (<50) . abs . centsdiff n $ xs] -- if within 50 cent, xs is the candidate
+-- list of ratios within 50 cents for a given semitone
+lstRatios :: Integer -> [(Rational, Integer)]
+lstRatios n' = [(p2r xs, round . centsdiff n $ xs)
+               | xs <- candidates,
+               (<50) . abs . centsdiff n $ xs]
     where n = fromInteger n'
           candidates = [[e2, e3, e5]| e2 <- range 2, e3 <- range 3, e5 <- range 5]
           range n = [0..(ceiling . (*10) . logBase n $ 2)]
-          str_cents = (++" cents") . show . round . centsdiff n 
+
+-- format a single approximation: "≒ 135/256 (-8 cents)"
+fmtApprox :: (Rational, Integer) -> String
+fmtApprox (r, c) = "≒ " ++ show (numerator r) ++ "/" ++ show (denominator r)
+                    ++ " (" ++ showSigned c ++ " cents)"
+    where showSigned x | x >= 0    = "+" ++ show x
+                       | otherwise = show x
+
+-- format a line: "+3 semitone\t≒ 75/64 (-25 cents)\t≒ 625/512 (+45 cents)"
+fmtLine :: Integer -> String
+fmtLine n = showSigned n ++ " semitone\t"
+            ++ intercalate "\t" (map fmtApprox (lstRatios n))
+    where showSigned x | x >= 0    = "+" ++ show x
+                       | otherwise = show x
 
 -- main
-main = sequence $ map (print . lstRatios) [-11..11]
+main :: IO ()
+main = mapM_ (putStrLn . fmtLine) [-11..11]
 
